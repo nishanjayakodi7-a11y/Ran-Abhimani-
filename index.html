@@ -1,0 +1,1050 @@
+<!DOCTYPE html>
+<html lang="si">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Golden Treasure | රන් භාණ්ඩ සහ වාරික ක්‍රමය</title>
+<script src="https://cdn.sheetjs.com/xlsx-0.20.1/package/dist/xlsx.full.min.js"></script>
+<style>
+:root{
+  --gold:#d4af37; --gold2:#f7e394; --dark:#1a1a2e; --dark2:#16213e;
+  --light:#fffdf5; --green:#1db954; --red:#e63946;
+}
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',Iskoola Pota,Tahoma,sans-serif}
+body{background:var(--light);color:#222}
+a{text-decoration:none}
+
+/* HEADER */
+header{background:linear-gradient(135deg,var(--dark),var(--dark2));color:#fff;padding:12px 20px;
+  position:sticky;top:0;z-index:100;box-shadow:0 2px 15px rgba(0,0,0,.3)}
+.hdr{max-width:1200px;margin:auto;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px}
+.logo{font-size:1.45rem;font-weight:bold;background:linear-gradient(90deg,var(--gold),var(--gold2));
+  -webkit-background-clip:text;background-clip:text;color:transparent}
+nav{display:flex;gap:6px;flex-wrap:wrap}
+nav button{background:transparent;border:1px solid rgba(212,175,55,.4);color:#fff;padding:8px 14px;
+  border-radius:20px;cursor:pointer;font-size:.88rem;transition:.3s}
+nav button:hover,nav button.active{background:var(--gold);color:#000;font-weight:600}
+#userBox{font-size:.85rem;color:var(--gold2);display:flex;align-items:center;gap:8px}
+
+/* SECTIONS */
+section{display:none;max-width:1200px;margin:auto;padding:25px 18px}
+section.show{display:block;animation:fade .35s}
+@keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+h2.title{text-align:center;font-size:1.8rem;margin-bottom:6px;color:var(--dark)}
+h2.title span{color:var(--gold)}
+.sub{text-align:center;color:#777;margin-bottom:25px;font-size:.95rem}
+
+/* HERO */
+.hero{background:linear-gradient(135deg,#1a1a2e,#0f3460);color:#fff;border-radius:18px;padding:45px 25px;text-align:center}
+.hero h1{font-size:2rem;margin-bottom:12px;line-height:1.35}
+.hero h1 b{color:var(--gold)}
+.hero p{opacity:.88;max-width:650px;margin:auto;line-height:1.75}
+.btns{margin-top:20px;display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+.btn{padding:11px 22px;border:none;border-radius:30px;cursor:pointer;font-weight:600;font-size:.92rem;transition:.25s;display:inline-flex;align-items:center;justify-content:center;gap:6px}
+.btn:disabled{opacity:.6;cursor:not-allowed}
+.btn-gold{background:linear-gradient(90deg,var(--gold),#b8941f);color:#000}
+.btn-gold:hover:not(:disabled){transform:translateY(-2px);box-shadow:0 6px 18px rgba(212,175,55,.4)}
+.btn-wa{background:#25d366;color:#fff}
+.btn-wa:hover{background:#1ebe5a}
+.btn-out{background:transparent;border:2px solid var(--gold);color:var(--gold)}
+.btn-out:hover{background:var(--gold);color:#000}
+.btn-red{background:var(--red);color:#fff}
+.btn-sm{padding:7px 14px;font-size:.82rem}
+
+/* CARDS */
+.rates{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:18px;margin:28px 0}
+.rate-card{background:#fff;border:2px solid var(--gold);border-radius:15px;padding:22px;text-align:center;
+  box-shadow:0 5px 18px rgba(0,0,0,.07)}
+.rate-card h3{color:var(--dark);font-size:1.05rem}
+.rate-card .val{font-size:1.65rem;color:var(--gold);font-weight:bold;margin:8px 0}
+.rate-card small{color:#777}
+
+/* PRODUCTS */
+.filters{display:flex;gap:8px;justify-content:center;margin-bottom:22px;flex-wrap:wrap}
+.filters button{padding:8px 18px;border:1px solid var(--gold);background:#fff;border-radius:20px;cursor:pointer;transition:.2s}
+.filters button.active,.filters button:hover{background:var(--gold);color:#000;font-weight:600}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(235px,1fr));gap:20px}
+.card{background:#fff;border-radius:15px;overflow:hidden;box-shadow:0 4px 18px rgba(0,0,0,.08);transition:.3s;display:flex;flex-direction:column}
+.card:hover{transform:translateY(-5px);box-shadow:0 12px 26px rgba(0,0,0,.14)}
+.card img{width:100%;height:195px;object-fit:cover;background:#eee}
+.card-body{padding:15px;flex:1;display:flex;flex-direction:column}
+.card-body h4{font-size:1rem;margin:8px 0 4px}
+.tag{display:inline-block;background:var(--gold2);color:#6b5400;padding:2px 9px;border-radius:10px;font-size:.73rem;font-weight:600}
+.price{color:var(--red);font-size:1.18rem;font-weight:bold;margin:8px 0 4px}
+.card .btn{width:100%;margin-top:auto}
+
+/* FORMS */
+.panel{background:#fff;border-radius:16px;padding:25px;box-shadow:0 5px 22px rgba(0,0,0,.08);max-width:780px;margin:auto}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.fld{margin-bottom:14px}
+.fld label{display:block;font-size:.86rem;font-weight:600;margin-bottom:5px;color:#444}
+.fld input,.fld select,.fld textarea{width:100%;padding:11px;border:1px solid #ddd;border-radius:9px;font-size:.93rem;outline:none}
+.fld input:focus,.fld select:focus,.fld textarea:focus{border-color:var(--gold);box-shadow:0 0 0 3px rgba(212,175,55,.15)}
+.req{color:var(--red)}
+.warn{color:var(--red);font-size:.8rem;margin-top:4px;display:none}
+
+/* CALCULATOR */
+.calc-wrap{display:grid;grid-template-columns:1fr 1.35fr;gap:20px;align-items:start}
+@media(max-width:820px){.calc-wrap,.row{grid-template-columns:1fr}}
+.result-box{background:linear-gradient(135deg,var(--dark),var(--dark2));color:#fff;border-radius:16px;padding:22px}
+.res-line{display:flex;justify-content:space-between;padding:9px 0;border-bottom:1px dashed rgba(255,255,255,.18);font-size:.93rem;gap:10px}
+.res-line:last-child{border-bottom:none}
+.res-line b{color:var(--gold2);text-align:right}
+.big{font-size:1.28rem;color:var(--gold)!important}
+table{width:100%;border-collapse:collapse;margin-top:14px;font-size:.87rem;background:#fff;border-radius:10px;overflow:hidden;box-shadow:0 2px 10px rgba(0,0,0,.05)}
+th{background:var(--dark);color:var(--gold);padding:11px 8px;text-align:center;font-size:.82rem;white-space:nowrap}
+td{padding:10px 8px;text-align:center;border-bottom:1px solid #eee}
+tr:hover td{background:#fffbea}
+.highlight{background:#fff8e1!important;font-weight:700}
+
+/* MODAL */
+.modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.65);z-index:500;align-items:center;justify-content:center;padding:15px}
+.modal.open{display:flex}
+.modal-box{background:#fff;border-radius:16px;padding:26px;max-width:520px;width:100%;max-height:92vh;overflow-y:auto}
+.close{float:right;cursor:pointer;font-size:1.5rem;color:#999;line-height:1}
+.close:hover{color:#000}
+
+/* FLOAT WA & MISC */
+.float-wa{position:fixed;bottom:20px;right:20px;z-index:200;display:flex;flex-direction:column;gap:10px}
+.float-wa a{width:54px;height:54px;border-radius:50%;background:#25d366;color:#fff;display:flex;align-items:center;justify-content:center;font-size:1.5rem;box-shadow:0 5px 18px rgba(0,0,0,.3);transition:.2s}
+.float-wa a:hover{transform:scale(1.1)}
+.alert{padding:12px 14px;border-radius:9px;margin-bottom:14px;font-size:.9rem;display:none}
+.alert.ok{background:#d4f8dd;color:#0a5c25;display:block}
+.alert.err{background:#ffd9dc;color:#8b0a14;display:block}
+.note{background:#fff8e1;border-left:4px solid var(--gold);padding:13px;border-radius:8px;font-size:.86rem;margin:15px 0;line-height:1.7}
+.badge-live{display:inline-block;background:#d4f8dd;color:#0a5c25;padding:4px 12px;border-radius:20px;font-size:.8rem;font-weight:600;margin-bottom:12px}
+.adm-tabs{display:flex;gap:8px;margin-bottom:18px;flex-wrap:wrap}
+.adm-tabs button{padding:9px 16px;border:none;background:#e9e9e9;border-radius:8px;cursor:pointer;font-weight:500}
+.adm-tabs button.active{background:var(--gold);font-weight:700}
+.adm-pane{display:none}.adm-pane.show{display:block}
+.scroll{overflow-x:auto}
+footer{background:var(--dark);color:#bbb;text-align:center;padding:28px 15px;margin-top:45px;font-size:.88rem;line-height:1.8}
+footer b{color:var(--gold)}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header>
+  <div class="hdr">
+    <div class="logo">✦ GOLDEN TREASURE ✦</div>
+    <nav id="nav">
+      <button data-s="home" class="active">මුල් පිටුව</button>
+      <button data-s="products">රන් භාණ්ඩ</button>
+      <button data-s="calculator">වාරික කැල්කියුලේටරය</button>
+      <button data-s="apply">අයදුම්පත</button>
+      <button data-s="contact">සම්බන්ධ වන්න</button>
+      <button data-s="admin">🔐 Admin</button>
+    </nav>
+    <div id="userBox">
+      <button class="btn btn-gold btn-sm" onclick="openModal('authModal')">ලියාපදිංචි / පිවිසෙන්න</button>
+    </div>
+  </div>
+</header>
+
+<!-- HOME -->
+<section id="home" class="show">
+  <div class="hero">
+    <h1>ඔබේ සිහින <b>රන් ආභරණ</b> දැන් පහසු <b>වාරික ක්‍රමයට</b></h1>
+    <p>කැරට් 22 සහ කැරට් 24 රන් පවුම් — අවම 30% මුදලක් මුලින් ගෙවා ඉතිරි 70% මාස 12 / 24 / 36 වාරිකවලට. වාර්ෂික පොලී අනුපාතය 16% — හීනවන ශේෂ ක්‍රමය (Reducing Balance) යටතේ.</p>
+    <div class="btns">
+      <button class="btn btn-gold" onclick="go('calculator')">💰 වාරිකය ගණනය කරන්න</button>
+      <button class="btn btn-out" onclick="go('products')">💍 භාණ්ඩ බලන්න</button>
+      <button class="btn btn-wa" onclick="go('apply')">📝 අයදුම්පත පුරවන්න</button>
+    </div>
+  </div>
+
+  <h2 class="title" style="margin-top:35px">අද දින <span>රන් මිල</span></h2>
+  <p class="sub">රන් පවුමක් (ග්‍රෑම් 8) සඳහා වන වෙළඳපොල මිල</p>
+  <div class="rates">
+    <div class="rate-card"><h3>කැරට් 22 (22K)</h3><div class="val" id="r22">—</div><small>රන් පවුමක් (8g)</small></div>
+    <div class="rate-card"><h3>කැරට් 24 (24K)</h3><div class="val" id="r24">—</div><small>රන් පවුමක් (8g)</small></div>
+    <div class="rate-card" style="border-color:var(--dark)"><h3>පොලී අනුපාතය</h3><div class="val" id="rIr">16%</div><small>වාර්ෂික • හීනවන ශේෂය</small></div>
+  </div>
+  <div class="rates">
+    <div class="rate-card"><h3>⬇️ අවම මුලික ගෙවීම</h3><div class="val" id="dpPct">30%</div><small>මුලින් ගෙවිය යුතු අවම මුදල</small></div>
+    <div class="rate-card"><h3>🏦 ණය ප්‍රතිශතය</h3><div class="val" id="lnPct">70%</div><small>වාරික ක්‍රමයට ගෙවිය හැක</small></div>
+    <div class="rate-card"><h3>📅 වාරික කාල සීමා</h3><div class="val">12 / 24 / 36</div><small>මාස</small></div>
+  </div>
+</section>
+
+<!-- PRODUCTS -->
+<section id="products">
+  <h2 class="title">අපගේ <span>රන් භාණ්ඩ</span> එකතුව</h2>
+  <p class="sub">ඔබ කැමති රන් භාණ්ඩය තෝරා WhatsApp හරහා වහාම ඇණවුම් කරන්න</p>
+  <div class="filters" id="filters"></div>
+  <div class="grid" id="prodGrid"></div>
+</section>
+
+<!-- CALCULATOR -->
+<section id="calculator">
+  <h2 class="title">වාරික <span>කැල්කියුලේටරය</span></h2>
+  <p class="sub">රන් පවුමකට සාපේක්ෂව අවම මුදල සහ මාස 12 / 24 / 36 වාරික ගණනය කරන්න</p>
+
+  <div id="calcLocked" style="display:none">
+    <div class="panel" style="text-align:center">
+      <h3 style="color:var(--red);margin-bottom:10px">🔒 කැල්කියුලේටරය අගුළු දමා ඇත</h3>
+      <p style="margin:12px 0 20px;color:#555;line-height:1.7">
+        කැල්කියුලේටරය භාවිතා කිරීමට පෙර කරුණාකර <b>Customer Application Form</b> එක සම්පූර්ණ කරන්න.
+      </p>
+      <button class="btn btn-gold" onclick="go('apply')">📝 Customer Application Form පුරවන්න</button>
+    </div>
+  </div>
+
+  <div id="calcMain">
+    <div class="calc-wrap">
+      <div class="panel">
+        <div class="fld">
+          <label>රන් වර්ගය (Karat) <span class="req">*</span></label>
+          <select id="cKarat" onchange="onGoldChange()">
+            <option value="22">කැරට් 22 (22K)</option>
+            <option value="24">කැරට් 24 (24K)</option>
+          </select>
+        </div>
+        <div class="fld">
+          <label>රන් පවුම් ගණන <span class="req">*</span></label>
+          <input type="number" id="cQty" value="1" min="0.25" step="0.25" oninput="onGoldChange()">
+        </div>
+        <div class="fld">
+          <label>රන් පවුමක මිල (රු.)</label>
+          <input type="number" id="cRate" readonly style="background:#f5f5f5">
+        </div>
+        <div class="fld">
+          <label>ඔබ මුලින් ගෙවන මුදල (රු.) — අවම 30%</label>
+          <input type="number" id="cDown" oninput="calc()" onblur="enforceMinDown()">
+          <div class="warn" id="downWarn"></div>
+        </div>
+        <div class="fld">
+          <label>වාර්ෂික පොලී අනුපාතය (%)</label>
+          <input type="number" id="cInt" value="16" readonly style="background:#f5f5f5">
+        </div>
+        <button class="btn btn-gold" style="width:100%" onclick="resetDown()">↺ අවම 30% ලෙස නැවත සකසන්න</button>
+      </div>
+
+      <div>
+        <div class="result-box">
+          <div class="res-line"><span>මුළු රන් භාණ්ඩ වටිනාකම</span><b class="big" id="oTotal">රු. 0</b></div>
+          <div class="res-line"><span>✅ අවම මුලික ගෙවීම (30%)</span><b id="oMin">රු. 0</b></div>
+          <div class="res-line"><span>ඔබ ගෙවන මුලික මුදල</span><b id="oDown">රු. 0</b></div>
+          <div class="res-line"><span>🏦 ඉතිරි ණය මුදල (70%)</span><b id="oLoan">රු. 0</b></div>
+          <div class="res-line"><span>පොලී ක්‍රමය</span><b>හීනවන ශේෂය • 16%</b></div>
+        </div>
+
+        <div class="scroll">
+          <table>
+            <thead>
+              <tr><th>කාල සීමාව</th><th>මාසික වාරිකය</th><th>මුළු පොලිය</th><th>මුළු ණය ගෙවීම</th></tr>
+            </thead>
+            <tbody id="instTable"></tbody>
+          </table>
+        </div>
+
+        <div class="note">
+          📌 <b>හීනවන ශේෂ ගණනය (Reducing Balance):</b><br>
+          EMI = P × r × (1+r)<sup>n</sup> ÷ [(1+r)<sup>n</sup> − 1]<br>
+          (P = ණය මුදල, r = 16% ÷ 12 = 1.3333%, n = මාස ගණන). සෑම මාසයකම පොලිය අය වන්නේ ඉතිරි ණය ශේෂයට පමණි.
+        </div>
+
+        <div class="btns" style="justify-content:flex-start">
+          <button class="btn btn-wa" onclick="sendCalcWA('94776948571')">📱 WhatsApp: 0776948571</button>
+          <button class="btn btn-wa" onclick="sendCalcWA('94763729072')">📱 WhatsApp: 0763729072</button>
+        </div>
+
+        <h3 style="margin:26px 0 10px;color:var(--dark)">📋 මාසික ගෙවීමේ සවිස්තර ලේඛනය</h3>
+        <div class="fld" style="max-width:220px">
+          <label>කාල සීමාව තෝරන්න</label>
+          <select id="schMonths" onchange="buildSchedule()">
+            <option value="12">මාස 12</option>
+            <option value="24">මාස 24</option>
+            <option value="36">මාස 36</option>
+          </select>
+        </div>
+        <div class="scroll" style="max-height:330px;overflow-y:auto">
+          <table>
+            <thead><tr><th>මාසය</th><th>වාරිකය</th><th>පොලිය</th><th>ණය මුදල</th><th>ඉතිරි ශේෂය</th></tr></thead>
+            <tbody id="schBody"></tbody>
+          </table>
+        </div>
+        <button class="btn btn-out btn-sm" style="margin-top:12px" onclick="exportSchedule()">⬇️ මෙම ලේඛනය Excel බාගන්න</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- APPLICATION FORM -->
+<section id="apply">
+  <h2 class="title">Customer <span>Application Form</span></h2>
+  <p class="sub">මෙම අයදුම්පත සම්පූර්ණ කළ පසු වාරික කැල්කියුලේටරය ස්වයංක්‍රීයව විවෘත වේ</p>
+  <div class="panel">
+    <div class="alert" id="appAlert"></div>
+    <form id="appForm">
+      <div class="row">
+        <div class="fld"><label>සම්පූර්ණ නම <span class="req">*</span></label><input required name="name" placeholder="ඔබේ සම්පූර්ණ නම"></div>
+      </div>
+      <div class="row">
+        <div class="fld"><label>දුරකථන අංකය <span class="req">*</span></label><input required name="phone" type="tel" pattern="0[0-9]{9}" placeholder="07XXXXXXXX"></div>
+        <div class="fld"><label>WhatsApp අංකය</label><input name="whatsapp" type="tel" placeholder="07XXXXXXXX"></div>
+      </div>
+      <div class="fld"><label>ඊමේල් ලිපිනය</label><input name="email" type="email" placeholder="example@gmail.com"></div>
+      <div class="row">
+        <div class="fld"><label>දිස්ත්‍රික්කය</label><input name="district" placeholder="උදා: කොළඹ / මහනුවර"></div>
+      </div>
+      <div class="row">
+        <div class="fld"><label>රන් වර්ගය <span class="req">*</span></label>
+          <select required name="karat">
+            <option value="22">කැරට් 22 (22K)</option>
+            <option value="24">කැරට් 24 (24K)</option>
+          </select>
+        </div>
+      </div>
+      <div class="row">
+        <div class="fld"><label>අවශ්‍ය රන් පවුම් ගණන <span class="req">*</span></label><input required name="qty" type="number" step="0.25" min="0.25" value="1"></div>
+        <div class="fld"><label>කැමති වාරික කාලය <span class="req">*</span></label>
+          <select required name="months">
+            <option value="12">මාස 12</option>
+            <option value="24">මාස 24</option>
+            <option value="36">මාස 36</option>
+          </select>
+        </div>
+      </div>
+      <div class="fld"><label>අමතර සටහන් / අවශ්‍ය රන් භාණ්ඩය</label><textarea name="note" rows="2" placeholder="උදා: මාලයක්, මුද්දක්, වළල්ලක්..."></textarea></div>
+      <div class="fld">
+        <label style="display:flex;gap:8px;align-items:center;font-weight:400;cursor:pointer">
+          <input type="checkbox" required style="width:auto"> මා ලබාදී ඇති තොරතුරු සත්‍ය බවත්, නියමයන්ට එකඟ බවත් සහතික කරමි.
+        </label>
+      </div>
+      <button type="submit" id="appSubmitBtn" class="btn btn-gold" style="width:100%">✅ අයදුම්පත ඉදිරිපත් කරන්න</button>
+    </form>
+    <div class="btns" style="margin-top:16px">
+      <button class="btn btn-wa" onclick="lastAppWA('94776948571')">📱 අයදුම්පත WhatsApp කරන්න (0776948571)</button>
+      <button class="btn btn-wa" onclick="lastAppWA('94763729072')">📱 අයදුම්පත WhatsApp කරන්න (0763729072)</button>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact">
+  <h2 class="title">අප <span>සම්බන්ධ කරගන්න</span></h2>
+  <p class="sub">ඇණවුම් සහ වැඩිදුර විස්තර සඳහා ඕනෑම වේලාවක අමතන්න හෝ WhatsApp පණිවිඩයක් එවන්න</p>
+  <div class="rates">
+    <div class="rate-card">
+      <h3>📞 දුරකථන / WhatsApp 1</h3>
+      <div class="val" style="font-size:1.35rem">077 694 8571</div>
+      <div class="btns">
+        <a class="btn btn-wa btn-sm" target="_blank" href="https://wa.me/94776948571?text=%E0%B6%86%E0%B6%BA%E0%B7%94%E0%B6%B6%E0%B7%9D%E0%B7%80%E0%B6%B1%E0%B7%8A!%20%E0%B6%BB%E0%B6%B1%E0%B7%8A%20%E0%B6%B7%E0%B7%8F%E0%B6%AB%E0%B7%8A%E0%B6%A9%20%E0%B6%B4%E0%B7%92%E0%B7%85%E0%B7%92%E0%B6%B6%E0%B6%B3%20%E0%B7%80%E0%B7%92%E0%B6%B8%E0%B7%83%E0%B7%93%E0%B6%B8%E0%B6%9A%E0%B7%8A.">💬 WhatsApp</a>
+        <a class="btn btn-out btn-sm" href="tel:0776948571">📞 Call</a>
+      </div>
+    </div>
+    <div class="rate-card">
+      <h3>📞 දුරකථන / WhatsApp 2</h3>
+      <div class="val" style="font-size:1.35rem">076 372 9072</div>
+      <div class="btns">
+        <a class="btn btn-wa btn-sm" target="_blank" href="https://wa.me/94763729072?text=%E0%B6%86%E0%B6%BA%E0%B7%94%E0%B6%B6%E0%B7%9D%E0%B7%80%E0%B6%B1%E0%B7%8A!%20%E0%B6%BB%E0%B6%B1%E0%B7%8A%20%E0%B6%B7%E0%B7%8F%E0%B6%AB%E0%B7%8A%E0%B6%A9%20%E0%B6%B4%E0%B7%92%E0%B7%85%E0%B7%92%E0%B6%B6%E0%B6%B3%20%E0%B7%80%E0%B7%92%E0%B6%B8%E0%B7%83%E0%B7%93%E0%B6%B8%E0%B6%9A%E0%B7%8A.">💬 WhatsApp</a>
+        <a class="btn btn-out btn-sm" href="tel:0763729072">📞 Call</a>
+      </div>
+    </div>
+  </div>
+  <div class="note" style="max-width:760px;margin:20px auto">
+    <b>සේවා වේලාවන්:</b> සඳුදා – සෙනසුරාදා | පෙ.ව. 9.00 – ප.ව. 6.00<br>
+    <b>ගෙවීම් ක්‍රම:</b> මුදල්, බැංකු තැන්පතු, Online Transfer
+  </div>
+</section>
+
+<!-- ADMIN -->
+<section id="admin">
+  <h2 class="title">🔐 Admin <span>Panel</span></h2>
+
+  <div id="admLogin" class="panel" style="max-width:420px">
+    <div class="alert" id="admAlert"></div>
+    <div class="fld"><label>Username</label><input id="aU" placeholder="admin"></div>
+    <div class="fld"><label>Password</label><input id="aP" type="password" placeholder="admin123" onkeydown="if(event.key==='Enter')adminLogin()"></div>
+    <button class="btn btn-gold" style="width:100%" onclick="adminLogin()">🔐 Login</button>
+    <p style="text-align:center;margin-top:10px;font-size:.8rem;color:#999">Default → admin / admin123</p>
+  </div>
+
+  <div id="admPanel" style="display:none">
+    <div style="text-align:center"><span class="badge-live">🟢 Google Sheet API සම්බන්ධ කර ඇත</span></div>
+    <div class="adm-tabs">
+      <button class="active" data-t="t1">💍 භාණ්ඩ කළමනාකරණය</button>
+      <button data-t="t2">💰 රන් මිල සැකසුම්</button>
+      <button data-t="t3">📋 Applications (Excel)</button>
+      <button data-t="t4">👥 ලියාපදිංචි පරිශීලකයින්</button>
+      <button data-t="t5" style="background:#ffd9dc;color:#8b0a14">🚪 Logout</button>
+    </div>
+
+    <!-- PRODUCTS -->
+    <div class="adm-pane show" id="t1">
+      <div class="panel" style="max-width:100%">
+        <h3 style="margin-bottom:14px">නව රන් භාණ්ඩයක් එකතු කරන්න</h3>
+        <div class="alert" id="pAlert"></div>
+        <div class="row">
+          <div class="fld"><label>භාණ්ඩයේ නම *</label><input id="pName" placeholder="උදා: රන් මාලය"></div>
+          <div class="fld"><label>කාණ්ඩය</label>
+            <select id="pCat"><option>මාල</option><option>මුදු</option><option>කරාබු</option><option>වළලු</option><option>පවුම්</option><option>සෙට්</option></select>
+          </div>
+        </div>
+        <div class="row">
+          <div class="fld"><label>කැරට්</label><select id="pKarat"><option value="22">22K</option><option value="24">24K</option></select></div>
+          <div class="fld"><label>බර (පවුම්)</label><input id="pWt" type="number" step="0.25" value="1"></div>
+        </div>
+        <div class="row">
+          <div class="fld"><label>මිල (රු.) — හිස් නම් ස්වයංක්‍රීයව ගණනය වේ</label><input id="pPrice" type="number" placeholder="විකල්පයි"></div>
+          <div class="fld"><label>පින්තූර URL එකක්</label><input id="pImg" placeholder="https://..."></div>
+        </div>
+        <div class="fld"><label>හෝ පරිගණකයෙන්/දුරකථනයෙන් පින්තූරයක් තෝරන්න</label><input id="pFile" type="file" accept="image/*"></div>
+        <button class="btn btn-gold" onclick="addProduct()">➕ භාණ්ඩය එකතු කරන්න</button>
+      </div>
+      <div class="grid" id="admGrid" style="margin-top:22px"></div>
+    </div>
+
+    <!-- RATES -->
+    <div class="adm-pane" id="t2">
+      <div class="panel">
+        <div class="alert" id="rateAlert"></div>
+        <div class="row">
+          <div class="fld"><label>කැරට් 22 — රන් පවුමක මිල (රු.)</label><input id="s22" type="number"></div>
+          <div class="fld"><label>කැරට් 24 — රන් පවුමක මිල (රු.)</label><input id="s24" type="number"></div>
+        </div>
+        <div class="row">
+          <div class="fld"><label>වාර්ෂික පොලී අනුපාතය (%)</label><input id="sIr" type="number" step="0.1"></div>
+          <div class="fld"><label>අවම මුලික ගෙවීම (%)</label><input id="sDp" type="number"></div>
+        </div>
+        <button class="btn btn-gold" onclick="saveRates()">💾 සැකසුම් සුරකින්න</button>
+      </div>
+    </div>
+
+    <!-- APPLICATIONS -->
+    <div class="adm-pane" id="t3">
+      <div class="alert" id="cloudAlert"></div>
+      <div class="note">
+        ☁️ සියලු පාරිභෝගික අයදුම්පත්, ඇණවුම් සහ ලියාපදිංචි කිරීම් ස්වයංක්‍රීයව ඔබගේ <b>Google Sheet</b> එකට සුරැකේ. පහත බොත්තමෙන් Google Sheet එකේ දත්ත මෙතනට ගෙන <b>Microsoft Excel (.xlsx)</b> ලෙස බාගත හැක.
+      </div>
+      <div class="btns" style="justify-content:flex-start;margin-bottom:14px">
+        <button class="btn btn-gold btn-sm" id="syncBtn" onclick="loadCloudApps()">☁️ Google Sheet දත්ත ගන්න (Refresh)</button>
+        <button class="btn btn-wa btn-sm" onclick="exportApps('xlsx')">⬇️ Excel (.xlsx) බාගන්න</button>
+        <button class="btn btn-out btn-sm" onclick="exportApps('csv')">⬇️ CSV බාගන්න</button>
+        <button class="btn btn-red btn-sm" onclick="clearApps()">🗑️ Local දත්ත මකන්න</button>
+      </div>
+      <div class="scroll"><table id="appTable"></table></div>
+    </div>
+
+    <!-- USERS -->
+    <div class="adm-pane" id="t4">
+      <div class="btns" style="justify-content:flex-start;margin-bottom:14px">
+        <button class="btn btn-gold btn-sm" onclick="exportUsers()">⬇️ Excel (.xlsx) බාගන්න</button>
+      </div>
+      <div class="scroll"><table id="usrTable"></table></div>
+    </div>
+  </div>
+</section>
+
+<!-- AUTH MODAL -->
+<div class="modal" id="authModal">
+  <div class="modal-box">
+    <span class="close" onclick="closeModal('authModal')">&times;</span>
+    <h3 id="authTitle">ලියාපදිංචි වන්න</h3>
+    <p style="font-size:.85rem;color:#888;margin:4px 0 14px">ගිණුමක් සාදා පහසුවෙන් ඇණවුම් සිදුකරන්න</p>
+    <div class="alert" id="authAlert"></div>
+    <div id="regFields">
+      <div class="fld"><label>සම්පූර්ණ නම</label><input id="rName" placeholder="ඔබේ නම"></div>
+      <div class="fld"><label>දුරකථන අංකය</label><input id="rPhone" type="tel" placeholder="07XXXXXXXX"></div>
+    </div>
+    <div class="fld"><label>ඊමේල් / පරිශීලක නාමය</label><input id="rEmail" placeholder="example@gmail.com"></div>
+    <div class="fld"><label>මුරපදය</label><input id="rPass" type="password" placeholder="••••••"></div>
+    <button class="btn btn-gold" style="width:100%" id="authBtn" onclick="doAuth()">ලියාපදිංචි වන්න</button>
+    <p style="text-align:center;margin-top:12px;font-size:.88rem">
+      <a href="#" id="authSwitch" style="color:#b8941f;font-weight:600" onclick="switchAuth(event)">දැනටමත් ගිණුමක් තිබේද? පිවිසෙන්න</a>
+    </p>
+  </div>
+</div>
+
+<!-- ORDER MODAL -->
+<div class="modal" id="orderModal">
+  <div class="modal-box">
+    <span class="close" onclick="closeModal('orderModal')">&times;</span>
+    <h3>🛒 ඇණවුම තහවුරු කරන්න</h3>
+    <div id="ordInfo" style="margin:15px 0;padding:14px;background:#fff8e1;border-radius:10px;font-size:.9rem;line-height:1.8"></div>
+    <div class="fld"><label>ඔබගේ නම *</label><input id="oName" placeholder="ඔබේ නම"></div>
+    <div class="fld"><label>දුරකථන අංකය *</label><input id="oPhone" type="tel" placeholder="07XXXXXXXX"></div>
+    <div class="fld">
+      <label>ගෙවීමේ ක්‍රමය / වාරික කාලය</label>
+      <select id="oMonths">
+        <option value="0">මුළු මුදල එකවර ගෙවීම</option>
+        <option value="12">මාස 12 වාරික ක්‍රමය</option>
+        <option value="24">මාස 24 වාරික ක්‍රමය</option>
+        <option value="36">මාස 36 වාරික ක්‍රමය</option>
+      </select>
+    </div>
+    <div class="btns">
+      <button class="btn btn-wa" onclick="sendOrder('94776948571')">📱 0776948571 ට යවන්න</button>
+      <button class="btn btn-wa" onclick="sendOrder('94763729072')">📱 0763729072 ට යවන්න</button>
+    </div>
+  </div>
+</div>
+
+<!-- FLOATING WHATSAPP -->
+<div class="float-wa">
+  <a href="https://wa.me/94776948571?text=%E0%B6%86%E0%B6%BA%E0%B7%94%E0%B6%B6%E0%B7%9D%E0%B7%80%E0%B6%B1%E0%B7%8A!" target="_blank" title="WhatsApp: 0776948571">💬</a>
+  <a href="https://wa.me/94763729072?text=%E0%B6%86%E0%B6%BA%E0%B7%94%E0%B6%B6%E0%B7%9D%E0%B7%80%E0%B6%B1%E0%B7%8A!" target="_blank" title="WhatsApp: 0763729072">💬</a>
+</div>
+
+<footer>
+  <b>✦ GOLDEN TREASURE ✦</b><br>
+  රන් භාණ්ඩ • පහසු වාරික ක්‍රමය • විශ්වාසනීය සේවය<br>
+  📞 0776948571 &nbsp;|&nbsp; 0763729072<br>
+  <small style="opacity:.65">© 2025 Golden Treasure. සියලු හිමිකම් ඇවිරිණි.</small>
+</footer>
+
+<script>
+/* ====== GOOGLE SHEET LIVE API (ඔබේ URL එක සම්බන්ධ කර ඇත) ====== */
+const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbw3QnKX7pI-Fp9J71JD8kH7svktmY0VcMVm1gaAYzvM-KAJNL7Igq6SYya7v_Lhk8iL/exec";
+const ADMIN_KEY = "golden123";
+
+async function sheetPost(payload){
+  try{
+    await fetch(GOOGLE_SCRIPT_URL, {
+      method: "POST",
+      mode: "no-cors",
+      headers: { "Content-Type": "text/plain;charset=utf-8" },
+      body: JSON.stringify(payload)
+    });
+    return true;
+  }catch(e){
+    console.error("Sheet Error:", e);
+    return false;
+  }
+}
+
+/* ====== HELPERS & STORAGE ====== */
+const $ = id => document.getElementById(id);
+const esc = s => String(s ?? '').replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+const LS = {
+  get:(k,d)=>{ try{ return JSON.parse(localStorage.getItem(k)) ?? d; }catch(e){ return d; } },
+  set:(k,v)=> localStorage.setItem(k, JSON.stringify(v))
+};
+
+let settings = LS.get('gt_settings', { r22: 230000, r24: 250000, interest: 16, down: 30 });
+let products = LS.get('gt_products', null);
+let apps     = LS.get('gt_apps', []);
+let users    = LS.get('gt_users', []);
+let session  = LS.get('gt_session', null);
+
+if(!products){
+  products = [
+    {id:1,name:'සම්ප්‍රදායික රන් මාලය',cat:'මාල',karat:22,wt:2,price:0,img:'https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?w=500'},
+    {id:2,name:'දියමන්ති රන් මුද්ද',cat:'මුදු',karat:22,wt:0.5,price:0,img:'https://images.unsplash.com/photo-1605100804763-247f67b3557e?w=500'},
+    {id:3,name:'රන් කරාබු යුගලය',cat:'කරාබු',karat:22,wt:1,price:0,img:'https://images.unsplash.com/photo-1535632066927-ab7c9ab60908?w=500'},
+    {id:4,name:'රන් වළල්ල (Bangle)',cat:'වළලු',karat:22,wt:3,price:0,img:'https://images.unsplash.com/photo-1611591437281-460bfbe1220a?w=500'},
+    {id:5,name:'24K පිරිසිදු රන් පවුම',cat:'පවුම්',karat:24,wt:1,price:0,img:'https://images.unsplash.com/photo-1610375461246-83df859d849d?w=500'},
+    {id:6,name:'මංගල රන් සෙට් එක',cat:'සෙට්',karat:22,wt:8,price:0,img:'https://images.unsplash.com/photo-1601121141461-9d6647bca1ed?w=500'}
+  ];
+  LS.set('gt_products', products);
+}
+
+const fmt = n => 'රු. ' + Number(n || 0).toLocaleString('en-US', { maximumFractionDigits: 2 });
+const rateOf = k => k == 24 ? settings.r24 : settings.r22;
+const priceOf = p => p.price > 0 ? p.price : p.wt * rateOf(p.karat);
+
+function alertBox(id, msg, ok = true){
+  const e = $(id);
+  e.className = 'alert ' + (ok ? 'ok' : 'err');
+  e.textContent = msg;
+  setTimeout(() => { e.className = 'alert'; }, 5000);
+}
+
+function emi(P, annual, n){
+  if(P <= 0) return 0;
+  const r = annual / 100 / 12;
+  if(r === 0) return P / n;
+  return P * r * Math.pow(1 + r, n) / (Math.pow(1 + r, n) - 1);
+}
+
+function openWA(num, msg){
+  window.open(`https://wa.me/${num}?text=${encodeURIComponent(msg)}`, '_blank');
+}
+
+/* ====== NAVIGATION ====== */
+document.querySelectorAll('#nav button').forEach(b => b.onclick = () => go(b.dataset.s));
+function go(s){
+  document.querySelectorAll('section').forEach(x => x.classList.remove('show'));
+  $(s).classList.add('show');
+  document.querySelectorAll('#nav button').forEach(b => b.classList.toggle('active', b.dataset.s === s));
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+  if(s === 'calculator') checkCalcAccess();
+}
+function openModal(id){ $(id).classList.add('open'); }
+function closeModal(id){ $(id).classList.remove('open'); }
+
+/* ====== RATES & PRODUCTS ====== */
+function renderRates(){
+  $('r22').textContent = fmt(settings.r22);
+  $('r24').textContent = fmt(settings.r24);
+  $('rIr').textContent = settings.interest + '%';
+  $('dpPct').textContent = settings.down + '%';
+  $('lnPct').textContent = (100 - settings.down) + '%';
+  $('s22').value = settings.r22;
+  $('s24').value = settings.r24;
+  $('sIr').value = settings.interest;
+  $('sDp').value = settings.down;
+  $('cInt').value = settings.interest;
+}
+
+let curFilter = 'all';
+function renderFilters(){
+  const cats = ['all', ...new Set(products.map(p => p.cat))];
+  $('filters').innerHTML = cats.map(c =>
+    `<button class="${c === curFilter ? 'active' : ''}" onclick="setFilter('${esc(c)}')">${c === 'all' ? 'සියල්ල' : esc(c)}</button>`
+  ).join('');
+}
+function setFilter(c){ curFilter = c; renderFilters(); renderProducts(); }
+function renderProducts(){
+  const list = curFilter === 'all' ? products : products.filter(p => p.cat === curFilter);
+  $('prodGrid').innerHTML = list.length ? list.map(p => `
+    <div class="card">
+      <img src="${esc(p.img || 'https://via.placeholder.com/400x300?text=Gold')}" onerror="this.src='https://via.placeholder.com/400x300?text=Gold'">
+      <div class="card-body">
+        <div><span class="tag">${p.karat}K</span> <span class="tag">${esc(p.cat)}</span></div>
+        <h4>${esc(p.name)}</h4>
+        <small style="color:#777">බර: ${p.wt} පවුම්</small>
+        <div class="price">${fmt(priceOf(p))}</div>
+        <small style="color:#555;margin-bottom:10px">අවම මුලික ගෙවීම (${settings.down}%): <b>${fmt(priceOf(p) * settings.down / 100)}</b></small>
+        <button class="btn btn-gold btn-sm" onclick="openOrder(${p.id})">🛒 ඇණවුම් කරන්න</button>
+      </div>
+    </div>`).join('') : '<p style="text-align:center;grid-column:1/-1;color:#888">භාණ්ඩ නොමැත.</p>';
+}
+
+/* ====== ORDER ====== */
+let ordP = null;
+function openOrder(id){
+  ordP = products.find(p => p.id === id);
+  const pr = priceOf(ordP), dp = pr * settings.down / 100, ln = pr - dp;
+  $('ordInfo').innerHTML = `
+    <b>${esc(ordP.name)}</b> (${ordP.karat}K • ${ordP.wt} පවුම්)<br>
+    මිල: <b>${fmt(pr)}</b><br>
+    අවම මුලික ගෙවීම (${settings.down}%): <b style="color:#1db954">${fmt(dp)}</b><br>
+    ඉතිරි ණය මුදල (${100 - settings.down}%): <b>${fmt(ln)}</b>`;
+  const lastApp = LS.get('gt_lastApp', null);
+  $('oName').value = (session && session.name) || (lastApp && lastApp['නම']) || '';
+  $('oPhone').value = (session && session.phone) || (lastApp && lastApp['දුරකථනය']) || '';
+  openModal('orderModal');
+}
+
+function sendOrder(num){
+  if(!ordP) return;
+  const name = $('oName').value.trim();
+  const phone = $('oPhone').value.trim();
+  if(!name || !phone){ alert('කරුණාකර ඔබගේ නම සහ දුරකථන අංකය ඇතුළත් කරන්න.'); return; }
+
+  const pr = priceOf(ordP), dp = pr * settings.down / 100, ln = pr - dp, m = +$('oMonths').value;
+  sheetPost({
+    action: 'order', name, phone, product: ordP.name, karat: ordP.karat,
+    weight: ordP.wt, price: Math.round(pr), down: Math.round(dp), loan: Math.round(ln), months: m
+  });
+
+  let msg = `*🛒 රන් භාණ්ඩ ඇණවුමක්*\n\n` +
+    `👤 නම: ${name}\n📞 දුරකථනය: ${phone}\n\n` +
+    `💍 භාණ්ඩය: ${ordP.name}\n⚜️ කැරට්: ${ordP.karat}K\n⚖️ බර: ${ordP.wt} පවුම්\n` +
+    `💰 මිල: ${fmt(pr)}\n⬇️ අවම මුලික ගෙවීම (${settings.down}%): ${fmt(dp)}\n🏦 ණය මුදල: ${fmt(ln)}\n`;
+  if(m > 0){
+    const e = emi(ln, settings.interest, m);
+    msg += `📅 කාලය: මාස ${m}\n💳 මාසික වාරිකය: ${fmt(e)}\n🧾 මුළු ගෙවීම: ${fmt(e * m + dp)}\n`;
+  }else{
+    msg += `📅 ගෙවීම: මුළු මුදල එකවර\n`;
+  }
+  openWA(num, msg);
+  closeModal('orderModal');
+}
+
+/* ====== CALCULATOR ====== */
+function checkCalcAccess(){
+  const ok = LS.get('gt_appDone', false) || !!session;
+  $('calcLocked').style.display = ok ? 'none' : 'block';
+  $('calcMain').style.display = ok ? 'block' : 'none';
+  if(ok) calc();
+}
+
+function onGoldChange(){
+  const total = (+$('cQty').value || 0) * rateOf(+$('cKarat').value);
+  $('cDown').value = Math.round(total * settings.down / 100);
+  calc();
+}
+
+function resetDown(){ onGoldChange(); }
+
+function enforceMinDown(){
+  const total = (+$('cQty').value || 0) * rateOf(+$('cKarat').value);
+  const minDp = Math.round(total * settings.down / 100);
+  if(+$('cDown').value < minDp){
+    $('cDown').value = minDp;
+    calc();
+  }
+}
+
+function calc(){
+  const k = +$('cKarat').value;
+  const q = Math.max(0, +$('cQty').value || 0);
+  const rate = rateOf(k);
+  $('cRate').value = rate;
+
+  const total = q * rate;
+  const minDp = total * settings.down / 100;
+  let typedDown = +$('cDown').value;
+  if($('cDown').value === ''){ typedDown = Math.round(minDp); $('cDown').value = typedDown; }
+
+  const warn = $('downWarn');
+  if(typedDown < minDp){
+    warn.style.display = 'block';
+    warn.textContent = `⚠️ අවම මුලික ගෙවීම ${settings.down}% (${fmt(minDp)}) විය යුතුය. ගණනය කිරීම අවම මුදලට අනුව පෙන්වයි.`;
+  }else{
+    warn.style.display = 'none';
+  }
+
+  const effDown = Math.min(Math.max(typedDown, minDp), total);
+  const loan = Math.max(0, total - effDown);
+
+  $('oTotal').textContent = fmt(total);
+  $('oMin').textContent = fmt(minDp);
+  $('oDown').textContent = fmt(effDown);
+  $('oLoan').textContent = fmt(loan);
+
+  $('instTable').innerHTML = [12, 24, 36].map(m => {
+    const e = emi(loan, settings.interest, m);
+    const totPay = e * m;
+    const intr = Math.max(0, totPay - loan);
+    return `<tr>
+      <td class="highlight">මාස ${m}</td>
+      <td><b style="color:#e63946">${fmt(e)}</b></td>
+      <td>${fmt(intr)}</td>
+      <td>${fmt(totPay)}</td>
+    </tr>`;
+  }).join('');
+
+  buildSchedule(loan);
+}
+
+let schData = [];
+function buildSchedule(loanArg){
+  const total = Math.max(0, +$('cQty').value || 0) * rateOf(+$('cKarat').value);
+  const minDp = total * settings.down / 100;
+  const effDown = Math.min(Math.max(+$('cDown').value || 0, minDp), total);
+  const loan = typeof loanArg === 'number' ? loanArg : Math.max(0, total - effDown);
+
+  const n = +$('schMonths').value;
+  const r = settings.interest / 100 / 12;
+  const e = emi(loan, settings.interest, n);
+  let bal = loan;
+  schData = [];
+  let html = '';
+
+  for(let i = 1; i <= n; i++){
+    const ip = bal * r;
+    const pp = e - ip;
+    bal = Math.max(0, bal - pp);
+    schData.push({ 'මාසය': i, 'වාරිකය': Math.round(e), 'පොලිය': Math.round(ip), 'ණය මුදල': Math.round(pp), 'ඉතිරි ශේෂය': Math.round(bal) });
+    html += `<tr><td>${i}</td><td>${fmt(e)}</td><td>${fmt(ip)}</td><td>${fmt(pp)}</td><td>${fmt(bal)}</td></tr>`;
+  }
+  $('schBody').innerHTML = html;
+}
+
+function exportSchedule(){
+  if(!schData.length) return;
+  const ws = XLSX.utils.json_to_sheet(schData);
+  const wb = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb, ws, 'Installment Schedule');
+  XLSX.writeFile(wb, `Gold_Installment_${$('schMonths').value}months.xlsx`);
+}
+
+function sendCalcWA(num){
+  const total = (+$('cQty').value || 0) * rateOf(+$('cKarat').value);
+  const minDp = total * settings.down / 100;
+  const down = Math.min(Math.max(+$('cDown').value || 0, minDp), total);
+  const loan = Math.max(0, total - down);
+
+  let msg = `*💰 රන් වාරික ගණනය*\n\n` +
+    `⚜️ කැරට්: ${$('cKarat').value}K\n` +
+    `⚖️ රන් පවුම්: ${$('cQty').value}\n` +
+    `💵 මුළු වටිනාකම: ${fmt(total)}\n` +
+    `⬇️ මුලික ගෙවීම: ${fmt(down)}\n` +
+    `🏦 ණය මුදල: ${fmt(loan)}\n` +
+    `📊 පොලිය: ${settings.interest}% (හීනවන ශේෂය)\n\n`;
+  [12, 24, 36].forEach(m => {
+    msg += `📅 මාස ${m} → ${fmt(emi(loan, settings.interest, m))} / මාසයකට\n`;
+  });
+  msg += `\nමට මේ පිළිබඳ වැඩි විස්තර ලබාදෙන්න.`;
+  openWA(num, msg);
+}
+
+/* ====== APPLICATION FORM ====== */
+$('appForm').onsubmit = async e => {
+  e.preventDefault();
+  const btn = $('appSubmitBtn');
+  btn.disabled = true;
+  btn.textContent = '⏳ අයදුම්පත යොමු කරමින් පවතී...';
+
+  const f = new FormData($('appForm')), o = {};
+  f.forEach((v, k) => o[k] = v.trim());
+
+  const total = (+o.qty) * rateOf(+o.karat);
+  const dp = total * settings.down / 100;
+  const loan = total - dp;
+  const mEmi = Math.round(emi(loan, settings.interest, +o.months));
+
+  const rec = {
+    'අංකය': apps.length + 1,
+    'දිනය': new Date().toLocaleString('en-GB'),
+    'නම': o.name, 'NIC': o.nic, 'දුරකථනය': o.phone,
+    'WhatsApp': o.whatsapp || o.phone, 'ඊමේල්': o.email || '-',
+    'ලිපිනය': o.address, 'දිස්ත්‍රික්කය': o.district || '-',
+    'රැකියාව': o.job, 'මාසික ආදායම': +o.income,
+    'කැරට්': o.karat + 'K', 'පවුම්': +o.qty,
+    'මුළු වටිනාකම': Math.round(total), 'මුලික ගෙවීම': Math.round(dp),
+    'ණය මුදල': Math.round(loan), 'කාලය (මාස)': +o.months,
+    'මාසික වාරිකය': mEmi, 'සටහන්': o.note || '-'
+  };
+
+  apps.push(rec);
+  LS.set('gt_apps', apps);
+  LS.set('gt_appDone', true);
+  LS.set('gt_lastApp', rec);
+
+  await sheetPost({
+    action: 'application', name: o.name, nic: o.nic, phone: o.phone,
+    whatsapp: o.whatsapp || o.phone, email: o.email || '', address: o.address,
+    district: o.district || '', job: o.job, income: o.income, karat: o.karat,
+    qty: o.qty, total: Math.round(total), down: Math.round(dp),
+    loan: Math.round(loan), months: o.months, emi: mEmi, note: o.note || ''
+  });
+
+  btn.disabled = false;
+  btn.textContent = '✅ අයදුම්පත ඉදිරිපත් කරන්න';
+  alertBox('appAlert', '✅ ඔබගේ අයදුම්පත සාර්ථකව යොමු කරන ලදී! වාරික කැල්කියුලේටරය දැන් විවෘතයි.');
+  $('appForm').reset();
+  renderApps();
+  setTimeout(() => go('calculator'), 1200);
+};
+
+function lastAppWA(num){
+  const a = LS.get('gt_lastApp', null);
+  if(!a){ alert('කරුණාකර පළමුව අයදුම්පත ඉදිරිපත් කරන්න.'); return; }
+  let msg = '*📋 Customer Application*\n\n';
+  for(const k in a) msg += `${k}: ${a[k]}\n`;
+  openWA(num, msg);
+}
+
+/* ====== AUTH ====== */
+let authMode = 'reg';
+function switchAuth(e){
+  e.preventDefault();
+  authMode = authMode === 'reg' ? 'login' : 'reg';
+  $('authTitle').textContent = authMode === 'reg' ? 'ලියාපදිංචි වන්න' : 'පිවිසෙන්න';
+  $('authBtn').textContent = $('authTitle').textContent;
+  $('regFields').style.display = authMode === 'reg' ? 'block' : 'none';
+  $('authSwitch').textContent = authMode === 'reg'
+    ? 'දැනටමත් ගිණුමක් තිබේද? පිවිසෙන්න'
+    : 'නව ගිණුමක් සාදාගන්නද? ලියාපදිංචි වන්න';
+}
+
+async function doAuth(){
+  const em = $('rEmail').value.trim(), pw = $('rPass').value;
+  if(!em || !pw){ alertBox('authAlert', 'කරුණාකර සියලු තොරතුරු පුරවන්න.', false); return; }
+
+  if(authMode === 'reg'){
+    if(!$('rName').value.trim()){ alertBox('authAlert', 'කරුණාකර ඔබේ නම ඇතුළත් කරන්න.', false); return; }
+    if(users.find(u => u.email === em)){ alertBox('authAlert', 'මෙම ගිණුම දැනටමත් ලියාපදිංචි කර ඇත.', false); return; }
+    const u = { name: $('rName').value.trim(), phone: $('rPhone').value.trim(), email: em, pass: pw, date: new Date().toLocaleString('en-GB') };
+    users.push(u);
+    LS.set('gt_users', users);
+    session = u;
+    LS.set('gt_session', u);
+    sheetPost({ action: 'register', name: u.name, phone: u.phone, email: em });
+    alertBox('authAlert', '✅ සාර්ථකව ලියාපදිංචි විය!');
+  }else{
+    const u = users.find(x => x.email === em && x.pass === pw);
+    if(!u){ alertBox('authAlert', 'ඊමේල් හෝ මුරපදය වැරදිය.', false); return; }
+    session = u;
+    LS.set('gt_session', u);
+    alertBox('authAlert', '✅ සාදරයෙන් පිළිගනිමු!');
+  }
+  setTimeout(() => { closeModal('authModal'); renderUser(); renderUsers(); checkCalcAccess(); }, 700);
+}
+
+function logout(){ session = null; localStorage.removeItem('gt_session'); renderUser(); checkCalcAccess(); }
+function renderUser(){
+  $('userBox').innerHTML = session
+    ? `<span>👤 <b>${esc(session.name || session.email)}</b></span> <button class="btn btn-red btn-sm" onclick="logout()">Logout</button>`
+    : `<button class="btn btn-gold btn-sm" onclick="openModal('authModal')">ලියාපදිංචි / පිවිසෙන්න</button>`;
+}
+
+/* ====== ADMIN ====== */
+function adminLogin(){
+  if($('aU').value.trim() === 'admin' && $('aP').value === 'admin123'){
+    $('admLogin').style.display = 'none';
+    $('admPanel').style.display = 'block';
+    renderAdmGrid();
+    renderApps();
+    renderUsers();
+    loadCloudApps(true);
+  }else{
+    alertBox('admAlert', 'වැරදි Username හෝ Password.', false);
+  }
+}
+
+document.querySelectorAll('.adm-tabs button').forEach(b => b.onclick = () => {
+  if(b.dataset.t === 't5'){
+    $('admPanel').style.display = 'none';
+    $('admLogin').style.display = 'block';
+    $('aU').value = $('aP').value = '';
+    return;
+  }
+  document.querySelectorAll('.adm-tabs button').forEach(x => x.classList.remove('active'));
+  b.classList.add('active');
+  document.querySelectorAll('.adm-pane').forEach(p => p.classList.remove('show'));
+  $(b.dataset.t).classList.add('show');
+  if(b.dataset.t === 't3') loadCloudApps(true);
+});
+
+function addProduct(){
+  if(!$('pName').value.trim()){ alertBox('pAlert', 'භාණ්ඩයේ නම අවශ්‍යයි.', false); return; }
+  const save = img => {
+    products.push({
+      id: Date.now(), name: $('pName').value.trim(), cat: $('pCat').value,
+      karat: +$('pKarat').value, wt: +$('pWt').value || 1, price: +$('pPrice').value || 0, img
+    });
+    LS.set('gt_products', products);
+    $('pName').value = $('pPrice').value = $('pImg').value = '';
+    $('pFile').value = '';
+    $('pWt').value = 1;
+    renderAdmGrid(); renderFilters(); renderProducts();
+    alertBox('pAlert', '✅ නව රන් භාණ්ඩය සාර්ථකව එකතු විය!');
+  };
+  if($('pFile').files[0]){
+    const fr = new FileReader();
+    fr.onload = e => save(e.target.result);
+    fr.readAsDataURL($('pFile').files[0]);
+  }else{
+    save($('pImg').value.trim());
+  }
+}
+
+function delProduct(id){
+  if(!confirm('මෙම භාණ්ඩය මකන්නද?')) return;
+  products = products.filter(p => p.id !== id);
+  LS.set('gt_products', products);
+  renderAdmGrid(); renderFilters(); renderProducts();
+}
+
+function editPrice(id){
+  const p = products.find(x => x.id === id);
+  const v = prompt('නව මිල ඇතුළත් කරන්න (රු.) — ස්වයංක්‍රීය මිලට 0 දමන්න:', priceOf(p));
+  if(v !== null && v !== ''){
+    p.price = +v;
+    LS.set('gt_products', products);
+    renderAdmGrid(); renderProducts();
+  }
+}
+
+function renderAdmGrid(){
+  $('admGrid').innerHTML = products.map(p => `
+    <div class="card">
+      <img src="${esc(p.img || 'https://via.placeholder.com/400x300?text=Gold')}">
+      <div class="card-body">
+        <h4>${esc(p.name)}</h4>
+        <small>${p.karat}K • ${esc(p.cat)} • ${p.wt} පවුම්</small>
+        <div class="price">${fmt(priceOf(p))}</div>
+        <div style="display:flex;gap:6px;margin-top:auto">
+          <button class="btn btn-out btn-sm" onclick="editPrice(${p.id})">✏️ මිල</button>
+          <button class="btn btn-red btn-sm" onclick="delProduct(${p.id})">🗑️ මකන්න</button>
+        </div>
+      </div>
+    </div>`).join('');
+}
+
+function saveRates(){
+  settings = { r22: +$('s22').value, r24: +$('s24').value, interest: +$('sIr').value, down: +$('sDp').value };
+  LS.set('gt_settings', settings);
+  renderRates(); renderProducts(); renderAdmGrid(); onGoldChange();
+  alertBox('rateAlert', '✅ නව රන් මිල සහ පොලී සැකසුම් සුරකින ලදී!');
+}
+
+function fmtCell(val){
+  if(typeof val === 'string' && /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}/.test(val)){
+    const d = new Date(val);
+    if(!isNaN(d)) return d.toLocaleString('en-GB');
+  }
+  return val;
+}
+
+function tbl(el, data){
+  if(!data || !data.length){
+    el.innerHTML = '<tr><td style="padding:20px;color:#888">තවම දත්ත නොමැත.</td></tr>';
+    return;
+  }
+  const keys = Object.keys(data[0]);
+  el.innerHTML = '<thead><tr>' + keys.map(k => `<th>${esc(k)}</th>`).join('') + '</tr></thead><tbody>' +
+    data.map(r => '<tr>' + keys.map(k => `<td>${esc(fmtCell(r[k]))}</td>`).join('') + '</tr>').join('') + '</tbody>';
+}
+
+function renderApps(){ tbl($('appTable'), apps); }
+function renderUsers(){
+  tbl($('usrTable'), users.map((u, i) => ({ 'අංකය': i + 1, 'නම': u.name, 'දුරකථනය': u.phone, 'ඊමේල්': u.email, 'දිනය': u.date })));
+}
+
+async function loadCloudApps(silent = false){
+  const btn = $('syncBtn');
+  if(btn){ btn.disabled = true; btn.textContent = '⏳ දත්ත ගනිමින්...'; }
+  try{
+    const res = await fetch(`${GOOGLE_SCRIPT_URL}?action=getApps&key=${ADMIN_KEY}`);
+    const data = await res.json();
+    if(Array.isArray(data)){
+      if(data.length){
+        apps = data.map(row => {
+          const clean = {};
+          for(const k in row) clean[k] = fmtCell(row[k]);
+          return clean;
+        });
+        LS.set('gt_apps', apps);
+        renderApps();
+        if(!silent) alertBox('cloudAlert', `✅ Google Sheet එකෙන් අයදුම්පත් ${data.length}ක් සාර්ථකව ලබාගන්නා ලදී!`);
+      }else if(!silent){
+        alertBox('cloudAlert', 'ℹ️ Google Sheet සම්බන්ධයි — නමුත් තවම අයදුම්පත් ඇතුළත් වී නොමැත.');
+      }
+    }
+  }catch(e){
+    if(!silent) alertBox('cloudAlert', '❌ Google Sheet වෙතින් දත්ත ගැනීමට නොහැකි විය. අන්තර්ජාල සම්බන්ධතාවය පරීක්ෂා කරන්න.', false);
+  }finally{
+    if(btn){ btn.disabled = false; btn.textContent = '☁️ Google Sheet දත්ත ගන්න (Refresh)'; }
+  }
+}
+
+function exportApps(type = 'xlsx'){
+  if(!apps.length){ alert('බාගත කිරීමට දත්ත නොමැත.'); return; }
+  const ws = XLSX.utils.json_to_sheet(apps);
+  const wb = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb, ws, 'Applications');
+  XLSX.writeFile(wb, 'Customer_Applications.' + (type === 'csv' ? 'csv' : 'xlsx'));
+}
+
+function exportUsers(){
+  if(!users.length){ alert('බාගත කිරීමට දත්ත නොමැත.'); return; }
+  const ws = XLSX.utils.json_to_sheet(users.map(u => ({ Name: u.name, Phone: u.phone, Email: u.email, Registered: u.date })));
+  const wb = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb, ws, 'Users');
+  XLSX.writeFile(wb, 'Registered_Users.xlsx');
+}
+
+function clearApps(){
+  if(confirm('මෙම Browser එකේ ගබඩා වී ඇති අයදුම්පත් පමණක් මකන්නද? (Google Sheet හි දත්ත සුරක්ෂිතව පවතී)')){
+    apps = []; LS.set('gt_apps', apps); renderApps();
+  }
+}
+
+/* ====== INIT ====== */
+renderRates();
+renderFilters();
+renderProducts();
+renderUser();
+checkCalcAccess();
+resetDown();
+</script>
+</body>
+</html>
